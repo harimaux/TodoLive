@@ -1,0 +1,287 @@
+﻿@model TodoLive.Models.MainVM
+
+
+@*USER TASKS*@
+<div class="container">
+
+    @*CREATE NEW TASK BTN*@
+    <div class="row">
+        <div class="col">
+
+            <div class="addTodoBtn">
+                <span class="material-symbols-outlined">
+                    note_add
+                </span>
+                <div>
+                    Add Task
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="">
+                <ul>
+                    <li class="">All Tasks</li>
+                    <li class="">
+                        Priority
+                        <ul>
+                            <li>Urgent</li>
+                            <li>Important</li>
+                            <li>Medium</li>
+                            <li>Low</li>
+                        </ul>
+                    </li>
+                    <li class="">Overdue</li>
+                    <li class="">Completed</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col userTasksBox">
+
+            @if (Model.TodosList != null && Model.TodosList.Any())
+            {
+                foreach (var task in Model.TodosList)
+                {
+                    <partial name="_Task" model=" new MainVM { Todos = task, TaskPriorityList = Model.TaskPriorityList }" />
+                }
+            }
+
+        </div>
+    </div>
+
+</div>
+
+
+@*ADD TASK MODAL*@
+<div class="modal fade addTaskModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Task</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" asp-action="CreateTask" class="createTaskForm">
+                <div class="addTaskFormContent">
+
+                    <div class="customInputLabelBox1">
+                        <input type="text" name="Title" class="customInput1" maxlength="60" />
+                        <label for="Title" id="labelTitle" base-value="Title" class="customLabel1">Title</label>
+                    </div>
+
+                    <div class="customInputLabelBox1">
+                        <textarea name="Content" class="customInput1 customTextbox1" maxlength="2000"></textarea>
+                        <label for="Content" id="labelContent" base-value="Description" class="customLabel1">Description</label>
+                    </div>
+
+                    <hr>
+
+                    <div class="customInputLabelBox1">
+                        <input name="FromRequested" class="customInput1" maxlength="60">
+                        <label for="FromRequested" id="labelFrom" base-value="From" class="customLabel1">From</label>
+                    </div>
+
+                    <div class="customInputLabelBox1">
+                        <select name="Priority" class="customInput1">
+                            <option></option>
+                            @foreach (var item in Model.TaskPriorityList)
+                            {
+                                <option value="@item.PriorityName" data-color="@item.PriorityVisual"> @Html.Raw(item.HTMLcode) @item.PriorityName</option>
+                            }
+                        </select>
+                        <label for="Priority" id="labelPriority" base-value="Priority" class="customLabel1">Priority</label>
+                    </div>
+
+                    <div class="customInputLabelBox1">
+                        <input type="date" name="DateDue" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="customInput1">
+                        <label for="DateDue" id="labelDueDate" class="customLabel1 calendarInput">Date Due</label>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer d-flex justify-content-between">
+                    <img src="~/Images/Logos/logoHarimauxShadow.png" style="width: 40px" />
+                    <button type="submit" class="btn btn-outline-success">Add Task</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script>
+
+        //MODAL
+        let addTaskBtn = document.querySelector('.addTodoBtn')
+
+        let formModel = new FormData();
+
+        addTaskBtn.addEventListener('click', () => {
+
+            $('.addTaskModal').modal("show");
+            
+        });
+
+
+        $(document).ready(function () {
+
+            //ANIMATED LABELS
+            let customInput1 = document.querySelectorAll('.customInputLabelBox1 input, .customInputLabelBox1 textarea, .customInputLabelBox1 select');
+
+            //MOVES LABELS IF THERE IS VALUE IN INPUT BOX
+
+            //INITIAL VALUE CHECK
+            customInput1.forEach(input => {
+
+                if (input.value != '') {
+
+                    input.nextElementSibling.classList.add('inputHasValue');
+
+                };
+            });
+
+
+            //CALENDAR WILL ALWAYS HAVE LABEL SET AT TOP (DESIGN IMPLICATIONS)
+            let calendarInput = document.querySelector('.calendarInput');
+            calendarInput.classList.add('inputHasValue');
+
+            //CHECK WHILE TYPIING
+            $(function () {
+                $(customInput1).focus(function () {
+                    selectedInput = this;
+
+                }).blur(function (e) {
+
+                    if (selectedInput.value != "") {
+                        e.target.nextElementSibling.classList.add('inputHasValue');
+                    } else {
+                        e.target.nextElementSibling.classList.remove('inputHasValue');
+                        calendarInput.classList.add('inputHasValue');
+                    }
+
+                    selectedInput = null;
+
+                });
+            });
+
+
+
+            //SAVE TASK FORM
+            var form = document.querySelector('.createTaskForm');
+            form.onsubmit = async function (e) {
+
+                e.preventDefault();
+
+                //INPUT VALUES
+                const taskTitle = document.querySelector('input[name=Title]').value;
+                const taskContent = document.querySelector('textarea[name=Content]').value;
+                const taskFromRequested = document.querySelector('input[name=FromRequested]').value;
+                const taskPriority = document.querySelector('select[name=Priority]').value;
+                const taskDateDue = document.querySelector('input[name=DateDue]').value;
+
+                // LABELS ELEMENTS
+                const labelTitle = document.querySelector('#labelTitle');
+                const labelContent = document.querySelector('#labelContent');
+                const labelFrom = document.querySelector('#labelFrom');
+                const labelPriority = document.querySelector('#labelPriority');
+                const labelDueDate = document.querySelector('#labelDueDate');
+
+                //FROM VALIDATION
+                let isValidated = true;
+
+                function validateForm(inputValue, errorMessage, label) {
+
+                    if (inputValue == "" || inputValue == null) {
+
+                        isValidated = false;
+
+                        label.innerHTML = errorMessage;
+                        label.classList.add('inputHasValue');
+                        label.style.color = "red";
+
+                    } else {
+
+                        switch (label.getAttribute('id')) {
+                            case 'labelTitle':
+                                getValueSetStyle()
+                            case 'labelContent':
+                                getValueSetStyle()
+                            case 'labelFrom':
+                                getValueSetStyle()
+                            case 'labelPriority':
+                                getValueSetStyle()
+                            case 'labelDueDate':
+                                getValueSetStyle()
+                        }
+
+                        function getValueSetStyle() {
+                            label.innerHTML = label.getAttribute('base-value');
+                            label.style.color = "#808080ff";
+                        }
+                    };
+                };
+
+
+                validateForm(taskTitle, "Enter title", labelTitle);
+                validateForm(taskContent, "Enter task description", labelContent);
+                validateForm(taskFromRequested, "Enter from", labelFrom);
+                validateForm(taskPriority, "Set priority", labelPriority);
+                validateForm(taskDateDue, "Set due date", labelDueDate);
+
+                if (isValidated == false) {
+                    return false;
+                }
+
+
+                //SET NEW TASK
+                let formModel = new FormData();
+
+                formModel.append('Title', taskTitle);
+                formModel.append('Content', taskContent);
+                formModel.append('FromRequested', taskFromRequested);
+                formModel.append('Priority', taskPriority);
+                formModel.append('DateDue', taskDateDue);
+
+                $.ajax({
+                    url: '@Url.Action("CreateTask", "Todos")',
+                    type: 'POST',
+                    data: formModel,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+
+                        //RESETS THE FORM AND LABELS + HIDE
+                        form.reset();
+                        customInput1.forEach(input => {
+
+                            input.nextElementSibling.classList.remove('inputHasValue');
+
+                        });
+                        calendarInput.classList.add('inputHasValue');
+                        $('.addTaskModal').modal("hide");
+
+                        //SHOWS NEWLY ADDED TASK
+                        $('.userTasksBox').prepend(data);
+
+                    },
+                    error: function (xhr, status, error) {
+                        var errorMessage = xhr.responseText || 'An error occurred.';
+                        alert('Error: ' + errorMessage);
+                        console.log(errorMessage);
+                    }
+                });
+            };
+
+        });
+
+
+    </script>
+
+}

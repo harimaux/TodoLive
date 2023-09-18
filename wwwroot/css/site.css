@@ -1,0 +1,155 @@
+*,
+::before,
+::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --ligghtGray: #d3d3d3;
+    --ligghtGrayDarker: #808080ff;
+    --darkGray: #050505;
+    --greenLight: #16AB84;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/*.preventTextSelect {
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}*/
+
+.material-symbols-outlined {
+    /*font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24*/
+    font-weight: 100;
+}
+
+.buttonCustomGreen {
+
+}
+
+.addTodoBtn {
+    width: 120px;
+    height: 40px;
+    background-color: var(--greenLight);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem;
+    margin-right: 202px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.createTaskForm {
+    position: relative;
+}
+
+.showErrors {
+
+}
+
+.addTaskFormContent hr {
+    width: 93%;
+    margin: auto;
+    margin-bottom: 1rem;
+}
+
+
+.customInputLabelBox1 {
+    position: relative;
+    margin: 1rem;
+}
+
+.customInput1 {
+    width: 100%;
+    padding: .5rem;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid var(--ligghtGray);
+    font-size: 15px;
+    color: var(--darkGray);
+}
+
+.customTextbox1 {
+    min-height: 200px;
+}
+
+.customLabel1 {
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    font-size: 14px;
+    padding: 0px 5px;
+    color: #666;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+.customInput1 option {
+    font-size: 18px;
+    font-weight: bolder;
+}
+
+.customInput1 option[data-color="red"] {
+    color: red;
+}
+
+.customInput1 option[data-color="orange"] {
+    color: orange;
+}
+
+.customInput1 option[data-color="green"] {
+    color: green;
+}
+
+.customInput1 option[data-color="gray"] {
+    color: gray;
+}
+
+.customInput1:focus {
+    border: 1px solid green;
+}
+
+.customInput1:focus + .customLabel1 {
+    top: -10px;
+    font-weight: bolder;
+    color: green;
+    background-color: #fff;
+}
+
+.inputHasValue {
+    top: -10px;
+    font-weight: bolder;
+    color: var(--ligghtGrayDarker);
+    background-color: #fff;
+}
+
+/* CARD */
+
+.customHeaderColorPriority div[base-value="red"] {
+    background-color: #f55d5d;
+}
+
+.customHeaderColorPriority div[base-value="orange"] {
+    background-color: #eeaf3c;
+}
+
+.customHeaderColorPriority div[base-value="green"] {
+    background-color: var(--greenLight);
+}
+
+.customHeaderColorPriority div[base-value="gray"] {
+    background-color: #858585;
+}
+
+.cardCustomButtons span:hover {
+    font-weight: 900;
+}

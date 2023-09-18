@@ -1,0 +1,69 @@
+﻿@model TodoLive.Models.MainVM
+
+@{
+    string priorityColor = "blue";
+    foreach (var priority in Model.TaskPriorityList)
+    {
+        if (priority.PriorityName == Model.Todos?.Priority && (priority.PriorityVisual != null))
+        {
+            priorityColor = priority.PriorityVisual;
+        }
+    }
+}
+
+
+<div class="border border-1 rounded m-5">
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Priority:</strong> @Model.Todos?.Priority</li>
+            </ul>
+        </div>
+        <div class="col-md-9 customHeaderColorPriority">
+            <div class="w-100 h-25 rounded" base-value="@priorityColor"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>From:</strong> @Model.Todos?.FromRequested</li>
+                <li class="list-group-item"><h4>@Model.Todos?.Title</h4></li>
+                @* <li class="list-group-item"><strong>State:</strong> @Model.Todos?.State</li> *@
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-end"><strong>Date Requested:</strong> @Model.Todos?.DateRequested.ToString("d")</li>
+                <li class="list-group-item text-end"><strong>Date Due:</strong> @Model.Todos?.DateDue.ToString("d")</li>
+            </ul>
+        </div>
+    </div>
+    <div class="card-body">
+        <p class="card-text">@Model.Todos?.Content</p>
+    </div>
+    <div class="card-footer d-flex justify-content-end" onmousedown="return false" onselectstart="return false">
+        <ul class="list-inline cardCustomButtons">
+            <li class="list-inline-item" role="button">
+                <span class="material-symbols-outlined">
+                    edit
+                </span>
+            </li>
+@*             <li class="list-inline-item" role="button">
+                <span class="material-symbols-outlined">
+                    progress_activity
+                </span>
+            </li> *@
+            <li class="list-inline-item" role="button">
+                <span class="material-symbols-outlined">
+                    task_alt
+                </span>
+            </li>
+            <li class="list-inline-item" role="button">
+                <span class="material-symbols-outlined">
+                    delete
+                </span>
+            </li>
+        </ul>
+    </div>
+</div>
+
