@@ -104,25 +104,30 @@ namespace TodoLive.Controllers
                 OwnerId = userId,
             };
 
-            try
-            {
-                _dbContext.TodosDB!.Add(newTask);
-                await _dbContext.SaveChangesAsync();
+            _dbContext.TodosDB!.Add(newTask);
+            await _dbContext.SaveChangesAsync();
 
-                if (user != null && _dbContext.TaskPriorityDB != null)
-                {
-                    vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
-                }
-
-                vm.Todos = newTask;
-                return PartialView("_Task", vm);
-            }
-            catch
+            if (user != null && _dbContext.TaskPriorityDB != null)
             {
-                return RedirectToAction("Error");
+                vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
             }
 
+            vm.Todos = newTask;
+            return PartialView("_Task", vm);
+        }
 
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> DeleteTask(string cardId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+
+            var vm = new MainVM();
+
+
+            return PartialView(vm);
         }
 
 

@@ -11,12 +11,27 @@
     --ligghtGrayDarker: #808080ff;
     --darkGray: #050505;
     --greenLight: #16AB84;
+    --fontLight: #F2F2F2;
+    --backgroundDark: #251F23;
+    --menuDarker: #251F23;
+    --menuDark: #322C31;
+    --menuLight: #B1B0B1;
+    --barelyVisibleLigt: #f5f5f54c;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
+    background-color: var(--menuDarker);
 }
 
+/* NAVIGATION */
+
+.customNav {
+    margin-bottom: 0 !important;
+    position: fixed;
+    width: 100%;
+    z-index: 1;
+}
 /*.preventTextSelect {
     -webkit-user-select: none;
     -webkit-touch-callout: none;
@@ -25,6 +40,7 @@ body {
     user-select: none;
 }*/
 
+/* GOOGLE ICONS */
 .material-symbols-outlined {
     /*font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24*/
     font-weight: 100;
@@ -42,19 +58,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 1rem;
-    margin-right: 202px;
     border-radius: 5px;
     cursor: pointer;
+    margin-bottom: 1rem;
 }
 
 .createTaskForm {
     position: relative;
 }
 
-.showErrors {
-
-}
+/* MODAL */
 
 .addTaskFormContent hr {
     width: 93%;
@@ -134,6 +147,33 @@ body {
 
 /* CARD */
 
+.customCard {
+    background-color: var(--menuDark);
+    color: var(--menuLight);
+    border-radius: 5px;
+    margin-bottom: 5rem;
+}
+
+.customCardHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: solid 1px var(--barelyVisibleLigt);
+}
+
+.customCardHeader h5 {
+    padding: .7rem;
+}
+
+.customHeaderColorPriority {
+    width: 60%;
+}
+
+.customHeaderColorPriority div {
+    height: 5px;
+    border-radius: 2px 0 0 2px;
+}
+
 .customHeaderColorPriority div[base-value="red"] {
     background-color: #f55d5d;
 }
@@ -150,6 +190,98 @@ body {
     background-color: #858585;
 }
 
-.cardCustomButtons span:hover {
+.customCardHeader2 {
+    display:flex;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.customCardHeader2Dates {
+    display: flex;
+}
+
+.customCardHeader2Dates div {
+    margin-right: 1rem;
+}
+
+.customCardContent {
+    border: solid 1px var(--barelyVisibleLigt);
+    width: 97%;
+    margin: auto;
+    margin-bottom: 1rem;
+    min-height: 120px;
+    border-radius: 5px;
+    padding: .5rem;
+}
+
+.cardFooter span:hover {
     font-weight: 900;
+    transform: scale(1.1);
+    transition: .2s ease-in-out;
+}
+
+.cardFooter {
+    background: #666;
+    border-radius: 0 0 5px 5px;
+    color: var(--fontLight);
+}
+
+.cardFooter ul {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cardFooter li {
+    list-style: none;
+    margin: .5rem;
+}
+
+/*USER TASKS*/
+
+.userTasksMain {
+    display: flex;
+    width: 800px;
+    margin: auto;
+    transform: translateY(80px);
+}
+
+.userTasksMain li {
+    list-style: none;
+}
+
+.userTasksLeftMenu li {
+    list-style: none;
+}
+
+.userTasksContent {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.userTaskTopMenu {
+
+}
+
+.userTasksBox {
+}
+
+/*LEFT MENU */
+
+.userTasksLeftMenu {
+    position: fixed;
+    color: var(--fontLight);
+    margin-top: 100px;
+}
+
+#menuLeftSubMenu1Btn {
+}
+
+.menuLeftSubMenu1 {
+    height: 0;
+    overflow: hidden;
+}
+
+.showMenuLeftSubMenu1 {
+    height: auto;
 }
