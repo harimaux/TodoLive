@@ -1,13 +1,31 @@
 ﻿@model TodoLive.Models.MainVM
 
+<div class="userTasksLeftMenu">
+    <ul>
+        <li class="">All Tasks</li>
+        <li>
+            <span id="menuLeftSubMenu1Btn">Priority &#8675;</span>
+            <ul class="menuLeftSubMenu1">
+                <li>Urgent</li>
+                <li>Important</li>
+                <li>Medium</li>
+                <li>Low</li>
+            </ul>
+        </li>
+        <li class="">Overdue</li>
+        <li class="">Completed</li>
+    </ul>
+</div>
+
 
 @*USER TASKS*@
-<div class="container">
+<div class="userTasksMain">
 
-    @*CREATE NEW TASK BTN*@
-    <div class="row">
-        <div class="col">
+    @*CONTENT*@
 
+    <div class="userTasksContent">
+
+        <div class="userTaskTopMenu">
             <div class="addTodoBtn">
                 <span class="material-symbols-outlined">
                     note_add
@@ -16,33 +34,10 @@
                     Add Task
                 </div>
             </div>
-
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col">
-            <div class="">
-                <ul>
-                    <li class="">All Tasks</li>
-                    <li class="">
-                        Priority
-                        <ul>
-                            <li>Urgent</li>
-                            <li>Important</li>
-                            <li>Medium</li>
-                            <li>Low</li>
-                        </ul>
-                    </li>
-                    <li class="">Overdue</li>
-                    <li class="">Completed</li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col userTasksBox">
+        <div class="userTasksCard">
 
             @if (Model.TodosList != null && Model.TodosList.Any())
             {
@@ -53,7 +48,11 @@
             }
 
         </div>
+
     </div>
+
+
+
 
 </div>
 
@@ -99,7 +98,7 @@
 
                     <div class="customInputLabelBox1">
                         <input type="date" name="DateDue" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="customInput1">
-                        <label for="DateDue" id="labelDueDate" class="customLabel1 calendarInput">Date Due</label>
+                        <label for="DateDue" id="labelDueDate" class="customLabel1 calendarInput" base-value="Date Due">Date Due</label>
                     </div>
 
                 </div>
@@ -181,10 +180,14 @@
 
                 //INPUT VALUES
                 const taskTitle = document.querySelector('input[name=Title]').value;
-                const taskContent = document.querySelector('textarea[name=Content]').value;
                 const taskFromRequested = document.querySelector('input[name=FromRequested]').value;
-                const taskPriority = document.querySelector('select[name=Priority]').value;
                 const taskDateDue = document.querySelector('input[name=DateDue]').value;
+
+                //TEXTAREA VALUES
+                const taskContent = document.querySelector('textarea[name=Content]').value;
+
+                //SELECT VALUES
+                const taskPriority = document.querySelector('select[name=Priority]').value;
 
                 // LABELS ELEMENTS
                 const labelTitle = document.querySelector('#labelTitle');
@@ -268,16 +271,55 @@
                         $('.addTaskModal').modal("hide");
 
                         //SHOWS NEWLY ADDED TASK
-                        $('.userTasksBox').prepend(data);
+                        $('.userTasksCard').prepend(data);
 
                     },
                     error: function (xhr, status, error) {
                         var errorMessage = xhr.responseText || 'An error occurred.';
                         alert('Error: ' + errorMessage);
-                        console.log(errorMessage);
                     }
                 });
             };
+
+
+
+
+
+
+            //USER TASKS - LEFT MENU
+            const menuLeftSubMenu1Btn = document.querySelector('#menuLeftSubMenu1Btn');
+            const menuLeftSubMenu1 = document.querySelector('.menuLeftSubMenu1');
+            menuLeftSubMenu1Btn.addEventListener('click', () => {
+
+                menuLeftSubMenu1.classList.toggle('showMenuLeftSubMenu1');
+            });
+
+
+            //DELETE, EDIT, COMPLETE TASK
+            const cardBtns = document.querySelector('.userTasksCard');
+
+            cardBtns.addEventListener('click', function (e) {
+
+                if (e.target.matches('.cardFooterBtnDelete')) {
+
+                    let cardId = e.target.getAttribute('cardId');
+
+                    $.ajax({
+                        url: '@Url.Action("DeleteTask", "Todos")',
+                        data: { cardId },
+                        type: 'POST',
+                        success: function (data) {
+
+                            console.log(data)
+                        },
+                        error: function (xhr, status, error) {
+                            var errorMessage = xhr.responseText || 'An error occurred.';
+                            alert('Error: ' + errorMessage);
+                        }
+                    });
+                };
+            });
+
 
         });
 

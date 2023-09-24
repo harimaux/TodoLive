@@ -12,39 +12,41 @@
 }
 
 
-<div class="border border-1 rounded m-5">
-    <div class="row">
-        <div class="col-md-3">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>Priority:</strong> @Model.Todos?.Priority</li>
-            </ul>
+<div class="customCard">
+
+    <div class="customCardHeader">
+        <div>
+            <h5><strong>Title: </strong> @Model.Todos?.Title</h5>
         </div>
-        <div class="col-md-9 customHeaderColorPriority">
-            <div class="w-100 h-25 rounded" base-value="@priorityColor"></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><strong>From:</strong> @Model.Todos?.FromRequested</li>
-                <li class="list-group-item"><h4>@Model.Todos?.Title</h4></li>
-                @* <li class="list-group-item"><strong>State:</strong> @Model.Todos?.State</li> *@
-            </ul>
-        </div>
-        <div class="col-md-6">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item text-end"><strong>Date Requested:</strong> @Model.Todos?.DateRequested.ToString("d")</li>
-                <li class="list-group-item text-end"><strong>Date Due:</strong> @Model.Todos?.DateDue.ToString("d")</li>
-            </ul>
+        <div class="customHeaderColorPriority">
+            <div base-value="@priorityColor"></div>
         </div>
     </div>
-    <div class="card-body">
-        <p class="card-text">@Model.Todos?.Content</p>
+
+    <div class="customCardHeader2">
+
+        <div>
+            <h7><strong>From: </strong></h7><p>@Model.Todos?.FromRequested</p>
+            @* <h7><strong>Priority: </strong></h7><p>@Model.Todos?.Priority</p> *@
+            @* <li class="list-group-item"><strong>State:</strong> @Model.Todos?.State</li> *@
+        </div>
+
+        <div class="customCardHeader2Dates">
+            <div><h7><strong>Date Requested: </strong></h7><p>@Model.Todos?.DateRequested.ToString("d")</p></div>
+            <div><h7><strong>Date Due: </strong></h7><p>@Model.Todos?.DateDue.ToString("d")</p></div>
+        </div>
+
     </div>
-    <div class="card-footer d-flex justify-content-end" onmousedown="return false" onselectstart="return false">
-        <ul class="list-inline cardCustomButtons">
-            <li class="list-inline-item" role="button">
-                <span class="material-symbols-outlined">
+
+    <div class="customCardContent">
+        <p class="">@Model.Todos?.Content</p>
+    </div>
+
+    <div class="cardFooter">
+
+        <ul class="cardFooterBtns">
+            <li class="" role="button">
+                <span title="Edit" class="material-symbols-outlined">
                     edit
                 </span>
             </li>
@@ -53,17 +55,18 @@
                     progress_activity
                 </span>
             </li> *@
-            <li class="list-inline-item" role="button">
-                <span class="material-symbols-outlined">
+            <li class="" role="button">
+                <span title="Mark task as completed" class="material-symbols-outlined">
                     task_alt
                 </span>
             </li>
-            <li class="list-inline-item" role="button">
-                <span class="material-symbols-outlined">
+            <li class="" role="button">
+                <span cardId="@Model?.Todos?.Id" title="Delete" class="material-symbols-outlined cardFooterBtnDelete">
                     delete
                 </span>
             </li>
         </ul>
-    </div>
-</div>
 
+    </div>
+
+</div>
