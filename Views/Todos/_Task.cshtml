@@ -45,26 +45,51 @@
     <div class="cardFooter">
 
         <ul class="cardFooterBtns">
+
             <li class="" role="button">
                 <span title="Edit" class="material-symbols-outlined">
                     edit
                 </span>
             </li>
-@*             <li class="list-inline-item" role="button">
-                <span class="material-symbols-outlined">
-                    progress_activity
-                </span>
-            </li> *@
-            <li class="" role="button">
-                <span title="Mark task as completed" class="material-symbols-outlined">
+
+            <li class="cardFooterBtsWithConfirm" role="button">
+
+                <div class="cardFooterConfirmBox">
+                    <div>
+                        <span class="material-symbols-outlined cardFooterMarkTaskAsCompleteBtn">
+                            check
+                        </span>
+                        <span class="material-symbols-outlined cardFooterCancelConfirmBox">
+                            close
+                        </span>
+                    </div>
+                </div>
+
+                <span cardId="@Model?.Todos?.Id" title="Mark task as completed" class="material-symbols-outlined cardFooterShowConfirmBoxBtn">
                     task_alt
                 </span>
+
             </li>
-            <li class="" role="button">
-                <span cardId="@Model?.Todos?.Id" title="Delete" class="material-symbols-outlined cardFooterBtnDelete">
+
+            <li class="cardFooterBtsWithConfirm" role="button">
+
+                <div class="cardFooterConfirmBox">
+                    <div>
+                        <span class="material-symbols-outlined cardFooterDeleteTaskBtn">
+                            check
+                        </span>
+                        <span class="material-symbols-outlined cardFooterCancelConfirmBox">
+                            close
+                        </span>
+                    </div>
+                </div>
+
+                <span cardId="@Model?.Todos?.Id" title="Delete" class="material-symbols-outlined cardFooterShowConfirmBoxBtn">
                     delete
                 </span>
+
             </li>
+
         </ul>
 
     </div>

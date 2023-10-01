@@ -2,9 +2,9 @@
 
 <div class="userTasksLeftMenu">
     <ul>
-        <li class="">All Tasks</li>
+        <li class="">Active Tasks</li>
         <li>
-            <span id="menuLeftSubMenu1Btn">Priority &#8675;</span>
+            <span id="menuLeftSubMenu1Btn">Priority <span class="menuLeftSubMenuPriorityArrow"></span></span>
             <ul class="menuLeftSubMenu1">
                 <li>Urgent</li>
                 <li>Important</li>
@@ -13,7 +13,7 @@
             </ul>
         </li>
         <li class="">Overdue</li>
-        <li class="">Completed</li>
+        <li class="menuLeftShowCompleted">Completed</li>
     </ul>
 </div>
 
@@ -231,7 +231,7 @@
                     };
                 };
 
-
+                //DEFAULT LABEL VALUES
                 validateForm(taskTitle, "Enter title", labelTitle);
                 validateForm(taskContent, "Enter task description", labelContent);
                 validateForm(taskFromRequested, "Enter from", labelFrom);
@@ -272,6 +272,8 @@
 
                         //SHOWS NEWLY ADDED TASK
                         $('.userTasksCard').prepend(data);
+                        let addedCard = document.querySelector('.userTasksCard').firstElementChild;
+                        $(addedCard).effect("shake");
 
                     },
                     error: function (xhr, status, error) {
@@ -284,41 +286,122 @@
 
 
 
-
-
-            //USER TASKS - LEFT MENU
-            const menuLeftSubMenu1Btn = document.querySelector('#menuLeftSubMenu1Btn');
-            const menuLeftSubMenu1 = document.querySelector('.menuLeftSubMenu1');
-            menuLeftSubMenu1Btn.addEventListener('click', () => {
-
-                menuLeftSubMenu1.classList.toggle('showMenuLeftSubMenu1');
-            });
-
-
             //DELETE, EDIT, COMPLETE TASK
             const cardBtns = document.querySelector('.userTasksCard');
 
             cardBtns.addEventListener('click', function (e) {
 
-                if (e.target.matches('.cardFooterBtnDelete')) {
+                if (e.target.matches('.cardFooterShowConfirmBoxBtn')) {
 
-                    let cardId = e.target.getAttribute('cardId');
+                    //Hides all confirm boxes
+                    let cardFooterConfirmBox = document.querySelectorAll('.cardFooterConfirmBox');
+                    cardFooterConfirmBox.forEach(item => {
 
-                    $.ajax({
-                        url: '@Url.Action("DeleteTask", "Todos")',
-                        data: { cardId },
-                        type: 'POST',
-                        success: function (data) {
-
-                            console.log(data)
-                        },
-                        error: function (xhr, status, error) {
-                            var errorMessage = xhr.responseText || 'An error occurred.';
-                            alert('Error: ' + errorMessage);
-                        }
+                        item.classList.remove('cardFooterConfirmBoxShow');
                     });
+
+                    //removes stle from all Li elements - baclground color
+                    let cardFooterBtsWithConfirm = document.querySelectorAll('.cardFooterBtsWithConfirm');
+                    cardFooterBtsWithConfirm.forEach(item => {
+
+                        item.style.backgroundColor = "unset";
+                    });
+
+                    //Shows confirm box
+                    let confirmBox = e.target.previousElementSibling;
+                    confirmBox.classList.add('cardFooterConfirmBoxShow');
+
+                    let cardFooterLiElement = e.target;
+                    cardFooterLiElement.parentNode.style.backgroundColor = "#B1B0B1";
+
+                    //removes style of all buttons
+                    let cardFooterShowConfirmBoxBtn = document.querySelectorAll('.cardFooterShowConfirmBoxBtn');
+                    cardFooterShowConfirmBoxBtn.forEach(item => {
+
+                        item.style.color = "#F2F2F2";
+                    });
+
+                    //changes style of called button
+                    e.target.style.color = "#050505";
+
+                    //Close confirm box btn
+                    let allCloseBtns = document.querySelectorAll('.cardFooterCancelConfirmBox');
+                    allCloseBtns.forEach(item => {
+
+                        item.addEventListener('click', (ev) => {
+
+                            item.parentElement.parentElement.classList.remove('cardFooterConfirmBoxShow');
+                            item.parentElement.parentElement.parentElement.style.backgroundColor = "unset";
+                            e.target.style.color = "#F2F2F2";
+                        });
+                    });
+
+                    //Remove task
+                    let cardId = e.target.getAttribute('cardId');
+                    let cardBox = e.target.closest('.customCard');
+
+                    let removeBtn = cardBox.getElementsByClassName('cardFooterDeleteTaskBtn')[0];
+
+                    removeBtn.addEventListener('click', () => {
+
+                        $.post('@Url.Action("DeleteTask", "Todos")', { cardId: cardId }, function () {
+
+                            $(cardBox).hide("puff", function () {
+                                $(cardBox).remove();
+                            });
+
+                        });
+                    });
+
+                    //Mark task as complete
+                    let completeTaskBtn = cardBox.getElementsByClassName('cardFooterMarkTaskAsCompleteBtn')[0];
+
+                    completeTaskBtn.addEventListener('click', () => {
+
+                        $.post('@Url.Action("MarkTaskAsComplete", "Todos")', { cardId: cardId }, function () {
+
+                            $(cardBox).hide("puff", function () {
+                                $(cardBox).remove();
+                            });
+
+                        });
+                    });
+
+
                 };
             });
+
+
+
+
+
+
+
+
+
+            //USER TASKS - LEFT MENU
+            const menuLeftSubMenu1Btn = document.querySelector('#menuLeftSubMenu1Btn');
+            const menuLeftSubMenu1 = document.querySelector('.menuLeftSubMenu1');
+
+            menuLeftSubMenu1Btn.addEventListener('click', () => {
+
+                menuLeftSubMenu1.classList.toggle('showMenuLeftSubMenu1');
+            });
+
+            const userTasksLeftMenu = document.querySelector('.userTasksLeftMenu');
+
+            userTasksLeftMenu.addEventListener('click', function (e) {
+
+                if (e.target.matches('.menuLeftShowCompleted')) {
+
+                    $.post('@Url.Action("ShowCompletedTasks", "Todos")', {}, function (data) {
+
+                        $('.userTasksCard').html(data)
+                    });
+                };
+
+            });
+
 
 
         });

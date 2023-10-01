@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using System.Globalization;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using TodoLive.Data;
 using TodoLive.Models;
 
@@ -42,6 +45,7 @@ namespace TodoLive.Controllers
             {
                 var allUserTasks = _dbContext.TodosDB
                     .Where(x => x.OwnerId == userId)
+                    .Where(x => x.State != "Completed")
                     .OrderByDescending(x => x.DateRequested)
                     .ToList();
                 vm.TodosList = allUserTasks;
@@ -124,11 +128,89 @@ namespace TodoLive.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
 
+            int convertedId = Int32.Parse(cardId);
+
+            if (_dbContext.TodosDB != null)
+            {
+                var task = await _dbContext.TodosDB.FindAsync(convertedId);
+
+                if (task == null)
+                {
+                    return Content("Error - no task to delete.");
+                }
+
+                _dbContext.TodosDB.Remove(task);
+                await _dbContext.SaveChangesAsync();
+
+            }
+
+
+            return RedirectToAction("Index");
+        }
+
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> MarkTaskAsComplete(string cardId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+
+            int convertedId = Int32.Parse(cardId);
+
+            if (_dbContext.TodosDB != null)
+            {
+                var task = await _dbContext.TodosDB.FindAsync(convertedId);
+
+                if (task == null)
+                {
+                    return Content("Error - task does not exist.");
+                }
+
+                task.DateCompleted = DateTime.Now;
+                task.DateEdited = DateTime.Now;
+                task.State = "Completed";
+
+                _dbContext.TodosDB.Update(task);
+                await _dbContext.SaveChangesAsync();
+
+            }
+
+
+            return RedirectToAction("Index");
+        }
+
+
+
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ShowCompletedTasks()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
             var vm = new MainVM();
 
+            if (user != null)
+            {
+                var allUserTasks = await _dbContext.TodosDB
+                    .Where(x => x.OwnerId == userId)
+                    .Where(x => x.State == "Completed")
+                    .OrderByDescending(x => x.DateRequested)
+                    .ToListAsync();
 
-            return PartialView(vm);
+                vm.TodosList = allUserTasks;
+            }
+
+            return PartialView("_Task", vm);
         }
+
+
+
+
+
+
 
 
     }
