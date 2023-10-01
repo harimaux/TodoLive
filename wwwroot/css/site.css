@@ -22,10 +22,13 @@
 body {
     font-family: 'Poppins', sans-serif;
     background-color: var(--menuDarker);
+    /*background-image: linear-gradient(to right, #212020, #070f27);*/
 }
 
-/* NAVIGATION */
+::-webkit-scrollbar {
 
+}
+/* NAVIGATION */
 .customNav {
     margin-bottom: 0 !important;
     position: fixed;
@@ -152,6 +155,8 @@ body {
     color: var(--menuLight);
     border-radius: 5px;
     margin-bottom: 5rem;
+    min-width: 1000px;
+
 }
 
 .customCardHeader {
@@ -233,11 +238,42 @@ body {
 
 .cardFooter li {
     list-style: none;
-    margin: .5rem;
+    display: flex;
+    padding: .3rem;
+    margin: .4rem;
+    border-radius: 20px;
 }
 
-/*USER TASKS*/
+.cardFooterBtsWithConfirm {
+    display: flex;
+}
 
+.cardFooterConfirmBox {
+    position: relative;
+    width: 0px;
+    pointer-events: none;
+    opacity: 0;
+    transition: .2s ease-in-out;
+}
+
+.cardFooterConfirmBox div {
+    position: absolute;
+    width: 80px;
+    height: 26px;
+    text-align: center;
+    background: var(--backgroundDark);
+    border-radius: 20px;
+    top: -1px;
+}
+
+.cardFooterConfirmBoxShow {
+    opacity: 1;
+    width: 80px;
+    pointer-events: unset;
+}
+
+
+/*USER TASKS*/
 .userTasksMain {
     display: flex;
     width: 800px;
@@ -272,6 +308,16 @@ body {
     position: fixed;
     color: var(--fontLight);
     margin-top: 100px;
+}
+
+.userTasksLeftMenu li {
+    margin: .5rem;
+    transition: .1s ease-in-out;
+    cursor: pointer;
+}
+
+.userTasksLeftMenu li:hover {
+    transform: translateX(10px);
 }
 
 #menuLeftSubMenu1Btn {
