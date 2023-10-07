@@ -6,6 +6,7 @@
         public List<Todos>? TodosList { get; set; }
         public TaskPriority TaskPriority { get; set; }
         public List<TaskPriority> TaskPriorityList { get; set; }
+        public bool GeneratePartialTask { get; set; }
 
         public MainVM()
         {

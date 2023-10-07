@@ -1,59 +1,52 @@
 ﻿@model TodoLive.Models.MainVM
 
-<div class="userTasksLeftMenu">
-    <ul>
-        <li class="">Active Tasks</li>
-        <li>
-            <span id="menuLeftSubMenu1Btn">Priority <span class="menuLeftSubMenuPriorityArrow"></span></span>
-            <ul class="menuLeftSubMenu1">
-                <li>Urgent</li>
-                <li>Important</li>
-                <li>Medium</li>
-                <li>Low</li>
-            </ul>
-        </li>
-        <li class="">Overdue</li>
-        <li class="menuLeftShowCompleted">Completed</li>
-    </ul>
+<div class="addTodoBtn">
+    <span class="material-symbols-outlined">
+        note_add
+    </span>
+    <div>
+        Add Task
+    </div>
 </div>
 
+<div class="taskMenu">
 
-@*USER TASKS*@
-<div class="userTasksMain">
-
-    @*CONTENT*@
-
-    <div class="userTasksContent">
-
-        <div class="userTaskTopMenu">
-            <div class="addTodoBtn">
-                <span class="material-symbols-outlined">
-                    note_add
-                </span>
-                <div>
-                    Add Task
-                </div>
-            </div>
+    <div class="userTasksLeftMenu">
+        <div class="userTaskLeftMenuContent">
+            <ul>
+                <li class="">Active Tasks</li>
+                <li>
+                    <span id="menuLeftSubMenu1Btn">Priority <span class="menuLeftSubMenuPriorityArrow"></span></span>
+                    <ul class="menuLeftSubMenu1">
+                        <li>Urgent</li>
+                        <li>Important</li>
+                        <li>Medium</li>
+                        <li>Low</li>
+                    </ul>
+                </li>
+                <li class="">Overdue</li>
+                <li class="menuLeftShowCompleted">Completed</li>
+            </ul>
         </div>
+    </div>
 
 
-        <div class="userTasksCard">
+    @*USER TASKS*@
+    <div class="userTasksMain">
 
-            @if (Model.TodosList != null && Model.TodosList.Any())
-            {
-                foreach (var task in Model.TodosList)
-                {
-                    <partial name="_Task" model=" new MainVM { Todos = task, TaskPriorityList = Model.TaskPriorityList }" />
-                }
-            }
+        @*CONTENT*@
+
+        <div class="userTasksContent">
+
+            <div class="userTasksCard">
+
+                <partial name="_Task" />
+
+            </div>
 
         </div>
 
     </div>
-
-
-
-
 </div>
 
 
@@ -62,7 +55,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Task</h5>
+                <h5 class="modal-title text-dark" id="exampleModalLabel">Create Task</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="POST" asp-action="CreateTask" class="createTaskForm">
@@ -117,21 +110,16 @@
 
     <script>
 
-        //MODAL
-        let addTaskBtn = document.querySelector('.addTodoBtn')
-
-        let formModel = new FormData();
-
-        addTaskBtn.addEventListener('click', () => {
-
-            $('.addTaskModal').modal("show");
-            
-        });
-
+        $('footer').hide();
 
         $(document).ready(function () {
 
-            //ANIMATED LABELS
+            //SHOW ADD TASK MODAL
+            $('.addTodoBtn').on('click', function () {
+                $('.addTaskModal').modal("show");
+            });
+
+            //ANIMATED LABELS IN 'ADD TASK' MODAL > FORM
             let customInput1 = document.querySelectorAll('.customInputLabelBox1 input, .customInputLabelBox1 textarea, .customInputLabelBox1 select');
 
             //MOVES LABELS IF THERE IS VALUE IN INPUT BOX
@@ -300,7 +288,7 @@
                         item.classList.remove('cardFooterConfirmBoxShow');
                     });
 
-                    //removes stle from all Li elements - baclground color
+                    //removes stle from all Li elements - background color
                     let cardFooterBtsWithConfirm = document.querySelectorAll('.cardFooterBtsWithConfirm');
                     cardFooterBtsWithConfirm.forEach(item => {
 
@@ -314,15 +302,18 @@
                     let cardFooterLiElement = e.target;
                     cardFooterLiElement.parentNode.style.backgroundColor = "#B1B0B1";
 
-                    //removes style of all buttons
+                    //removes style of all buttons + add back hover
                     let cardFooterShowConfirmBoxBtn = document.querySelectorAll('.cardFooterShowConfirmBoxBtn');
                     cardFooterShowConfirmBoxBtn.forEach(item => {
 
+                        item.classList.add('cardFooterButtonsHover');
                         item.style.color = "#F2F2F2";
                     });
 
                     //changes style of called button
                     e.target.style.color = "#050505";
+                    e.target.style.opacity = ".7";
+                    e.target.classList.remove('cardFooterButtonsHover');
 
                     //Close confirm box btn
                     let allCloseBtns = document.querySelectorAll('.cardFooterCancelConfirmBox');
@@ -330,9 +321,11 @@
 
                         item.addEventListener('click', (ev) => {
 
+                            item.parentElement.parentElement.nextElementSibling.classList.add('cardFooterButtonsHover')
                             item.parentElement.parentElement.classList.remove('cardFooterConfirmBoxShow');
                             item.parentElement.parentElement.parentElement.style.backgroundColor = "unset";
                             e.target.style.color = "#F2F2F2";
+                            e.target.style.opacity = "1";
                         });
                     });
 

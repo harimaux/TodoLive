@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using System.IO;
+@using Microsoft.AspNetCore.Mvc;
+@using System.Diagnostics;
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -23,7 +28,7 @@
 
 </head>
 <body>
-    <header>
+@*     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark box-shadow customNav">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TodoLive</a>
@@ -47,9 +52,49 @@
                 </div>
             </div>
         </nav>
+    </header> *@
+
+    <div class="customNavMobileMenuBtn">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <header>
+
+        <nav class="customNav">
+
+            <div class="customNavLogoLink">
+                <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/Images/Logos/logoHarimauxShadow.png" />TodoLive Ai</a>
+            </div>
+
+            <div class="customNavLinksAndAccount">
+                <ul class="">
+                    <li class="">
+                        <a class="" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="">
+                        <a class="" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    </li>
+                    <li class="">
+                        <a class="" asp-area="" asp-controller="Todos" asp-action="Index">Todos</a>
+                    </li>
+                </ul>
+                <div>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+
+        </nav>
     </header>
 
     @RenderBody()
+
+
+    <footer>
+        @await Component.InvokeAsync("Footer")
+    </footer>
+
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

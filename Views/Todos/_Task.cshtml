@@ -1,97 +1,101 @@
 ﻿@model TodoLive.Models.MainVM
 
-@{
-    string priorityColor = "blue";
-    foreach (var priority in Model.TaskPriorityList)
+
+@if(Model.TodosList != null)
+{
+    foreach(var task in Model.TodosList)
     {
-        if (priority.PriorityName == Model.Todos?.Priority && (priority.PriorityVisual != null))
+
+        string priorityColor = "";
+        foreach (var priority in Model.TaskPriorityList)
         {
-            priorityColor = priority.PriorityVisual;
+            if (priority.PriorityName == task.Priority && (priority.PriorityVisual != null))
+            {
+                priorityColor = priority.PriorityVisual;
+            }
         }
+
+        <div class="customCard">
+
+            <div class="customCardHeader">
+                <div>
+                    <h5><strong>Title: </strong> @task.Title</h5>
+                </div>
+                <div class="customHeaderColorPriority">
+                    <div base-value="@priorityColor"></div>
+                </div>
+            </div>
+
+            <div class="customCardHeader2">
+
+                <div>
+                    <h7><strong>From: </strong></h7><p>@task.FromRequested</p>
+                </div>
+
+                <div class="customCardHeader2Dates">
+                    <div><h7><strong>Date Requested: </strong></h7><p>@task.DateRequested.ToString("d")</p></div>
+                    <div><h7><strong>Date Due: </strong></h7><p>@task.DateDue.ToString("d")</p></div>
+                </div>
+
+            </div>
+
+            <div class="customCardContent">
+                <p class="">@task.Content</p>
+            </div>
+
+            <div class="cardFooter">
+
+                <ul class="cardFooterBtns">
+
+                    <li class="" role="button">
+                        <span title="Edit" class="material-symbols-outlined cardFooterButtonsHover">
+                            edit
+                        </span>
+                    </li>
+
+                    <li class="cardFooterBtsWithConfirm">
+
+                        <div class="cardFooterConfirmBox">
+                            <div>
+                                <span title="Complete task" class="material-symbols-outlined cardFooterMarkTaskAsCompleteBtn cardFooterButtonsHover">
+                                    check
+                                </span>
+                                <span title="Cancel" class="material-symbols-outlined cardFooterCancelConfirmBox cardFooterButtonsHover">
+                                    close
+                                </span>
+                            </div>
+                        </div>
+
+                        <span cardId="@task.Id" title="Mark task as completed" class="material-symbols-outlined cardFooterShowConfirmBoxBtn cardFooterButtonsHover">
+                            task_alt
+                        </span>
+
+                    </li>
+
+                    <li class="cardFooterBtsWithConfirm">
+
+                        <div class="cardFooterConfirmBox">
+                            <div>
+                                <span title="Delete task" class="material-symbols-outlined cardFooterDeleteTaskBtn cardFooterButtonsHover">
+                                    check
+                                </span>
+                                <span title="Cancel" class="material-symbols-outlined cardFooterCancelConfirmBox cardFooterButtonsHover">
+                                    close
+                                </span>
+                            </div>
+                        </div>
+
+                        <span cardId="@task.Id" title="Delete" class="material-symbols-outlined cardFooterShowConfirmBoxBtn cardFooterButtonsHover">
+                            delete
+                        </span>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+        </div>
     }
 }
 
-
-<div class="customCard">
-
-    <div class="customCardHeader">
-        <div>
-            <h5><strong>Title: </strong> @Model.Todos?.Title</h5>
-        </div>
-        <div class="customHeaderColorPriority">
-            <div base-value="@priorityColor"></div>
-        </div>
-    </div>
-
-    <div class="customCardHeader2">
-
-        <div>
-            <h7><strong>From: </strong></h7><p>@Model.Todos?.FromRequested</p>
-            @* <h7><strong>Priority: </strong></h7><p>@Model.Todos?.Priority</p> *@
-            @* <li class="list-group-item"><strong>State:</strong> @Model.Todos?.State</li> *@
-        </div>
-
-        <div class="customCardHeader2Dates">
-            <div><h7><strong>Date Requested: </strong></h7><p>@Model.Todos?.DateRequested.ToString("d")</p></div>
-            <div><h7><strong>Date Due: </strong></h7><p>@Model.Todos?.DateDue.ToString("d")</p></div>
-        </div>
-
-    </div>
-
-    <div class="customCardContent">
-        <p class="">@Model.Todos?.Content</p>
-    </div>
-
-    <div class="cardFooter">
-
-        <ul class="cardFooterBtns">
-
-            <li class="" role="button">
-                <span title="Edit" class="material-symbols-outlined">
-                    edit
-                </span>
-            </li>
-
-            <li class="cardFooterBtsWithConfirm" role="button">
-
-                <div class="cardFooterConfirmBox">
-                    <div>
-                        <span class="material-symbols-outlined cardFooterMarkTaskAsCompleteBtn">
-                            check
-                        </span>
-                        <span class="material-symbols-outlined cardFooterCancelConfirmBox">
-                            close
-                        </span>
-                    </div>
-                </div>
-
-                <span cardId="@Model?.Todos?.Id" title="Mark task as completed" class="material-symbols-outlined cardFooterShowConfirmBoxBtn">
-                    task_alt
-                </span>
-
-            </li>
-
-            <li class="cardFooterBtsWithConfirm" role="button">
-
-                <div class="cardFooterConfirmBox">
-                    <div>
-                        <span class="material-symbols-outlined cardFooterDeleteTaskBtn">
-                            check
-                        </span>
-                        <span class="material-symbols-outlined cardFooterCancelConfirmBox">
-                            close
-                        </span>
-                    </div>
-                </div>
-
-                <span cardId="@Model?.Todos?.Id" title="Delete" class="material-symbols-outlined cardFooterShowConfirmBoxBtn">
-                    delete
-                </span>
-
-            </li>
-
-        </ul>
-
-    </div>
-
-</div>

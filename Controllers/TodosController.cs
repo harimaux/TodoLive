@@ -32,6 +32,24 @@ namespace TodoLive.Controllers
             return _dbContext;
         }
 
+        //public IEnumerable<Todos> GetCompletedPosts()
+        //{
+        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+
+        //    var allUserTasks = new List<Todos>();
+
+        //    if (user != null && _dbContext.TodosDB != null)
+        //    {
+        //        allUserTasks = _dbContext.TodosDB
+        //            .Where(x => x.OwnerId == userId && x.State != "Completed")
+        //            .OrderByDescending(x => x.DateRequested)
+        //            .ToList();
+        //    }
+
+        //    return allUserTasks;
+        //}
+
         [Authorize]
         public IActionResult Index()
         {
@@ -44,8 +62,7 @@ namespace TodoLive.Controllers
             if (user != null && _dbContext.TodosDB != null)
             {
                 var allUserTasks = _dbContext.TodosDB
-                    .Where(x => x.OwnerId == userId)
-                    .Where(x => x.State != "Completed")
+                    .Where(x => x.OwnerId == userId && x.State != "Completed")
                     .OrderByDescending(x => x.DateRequested)
                     .ToList();
                 vm.TodosList = allUserTasks;
@@ -55,21 +72,6 @@ namespace TodoLive.Controllers
             {
                 vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
             }
-
-
-            //if(vm.TodosList != null)
-            //{
-            //    foreach (var task in vm.TodosList)
-            //    {
-            //        foreach (var priorityItem in vm.TaskPriorityList)
-            //        {
-            //            if(task.Priority == priorityItem.PriorityName)
-            //            {
-
-            //            }
-            //        }
-            //    }
-            //}
 
             
 
@@ -116,7 +118,8 @@ namespace TodoLive.Controllers
                 vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
             }
 
-            vm.Todos = newTask;
+            vm.TodosList?.Add(newTask);
+
             return PartialView("_Task", vm);
         }
 
@@ -143,7 +146,6 @@ namespace TodoLive.Controllers
                 await _dbContext.SaveChangesAsync();
 
             }
-
 
             return RedirectToAction("Index");
         }
@@ -195,12 +197,16 @@ namespace TodoLive.Controllers
             if (user != null)
             {
                 var allUserTasks = await _dbContext.TodosDB
-                    .Where(x => x.OwnerId == userId)
-                    .Where(x => x.State == "Completed")
+                    .Where(x => x.OwnerId == userId && x.State == "Completed")
                     .OrderByDescending(x => x.DateRequested)
                     .ToListAsync();
 
                 vm.TodosList = allUserTasks;
+            }
+
+            if (user != null && _dbContext.TaskPriorityDB != null)
+            {
+                vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
             }
 
             return PartialView("_Task", vm);
