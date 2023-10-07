@@ -1,4 +1,8 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿let menuBtn = document.querySelector('.customNavMobileMenuBtn');
+menuBtn.addEventListener('click', () => {
 
-// Write your JavaScript code.
+    menuBtn.classList.toggle('customNavMobileMenuBtnChangeShapeToClose');
+    let header = document.querySelector('header');
+    header.classList.toggle('toggleMobileMenu');
+    header.style.display = "unset";
+});
