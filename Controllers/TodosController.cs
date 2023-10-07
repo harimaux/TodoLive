@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Globalization;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TodoLive.Data;
@@ -31,24 +32,6 @@ namespace TodoLive.Controllers
         {
             return _dbContext;
         }
-
-        //public IEnumerable<Todos> GetCompletedPosts()
-        //{
-        //    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
-
-        //    var allUserTasks = new List<Todos>();
-
-        //    if (user != null && _dbContext.TodosDB != null)
-        //    {
-        //        allUserTasks = _dbContext.TodosDB
-        //            .Where(x => x.OwnerId == userId && x.State != "Completed")
-        //            .OrderByDescending(x => x.DateRequested)
-        //            .ToList();
-        //    }
-
-        //    return allUserTasks;
-        //}
 
         [Authorize]
         public IActionResult Index()
@@ -188,7 +171,7 @@ namespace TodoLive.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> ShowCompletedTasks()
+        public async Task<IActionResult> ShowSelectedTasks(string id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -196,12 +179,41 @@ namespace TodoLive.Controllers
 
             if (user != null)
             {
-                var allUserTasks = await _dbContext.TodosDB
-                    .Where(x => x.OwnerId == userId && x.State == "Completed")
-                    .OrderByDescending(x => x.DateRequested)
-                    .ToListAsync();
+                var allTasks = new List<Todos>(await _dbContext.TodosDB.Where(x => x.OwnerId == userId).ToListAsync());
+                IEnumerable<Todos> sortedTasks;
 
-                vm.TodosList = allUserTasks;
+                switch (id)
+                {
+                    case "Completed":
+                        sortedTasks = allTasks.Where(x => x.State == "Completed");
+                        vm.TodosList = sortedTasks.ToList();
+                        break;
+                    case "Overdue":
+                            sortedTasks = allTasks.Where(x => x.State != "Completed" && x.DateDue < DateTime.UtcNow);
+                            vm.TodosList = sortedTasks.ToList();
+                        break;
+                    case "Urgent":
+                            sortedTasks = allTasks.Where(x => x.Priority == "Urgent" && x.State != "Completed");
+                            vm.TodosList = sortedTasks.ToList();
+                        break;
+                    case "Important":
+                            sortedTasks = allTasks.Where(x => x.Priority == "Important" && x.State != "Completed");
+                            vm.TodosList = sortedTasks.ToList();
+                        break;
+                    case "Medium":
+                            sortedTasks = allTasks.Where(x => x.Priority == "Medium" && x.State != "Completed");
+                            vm.TodosList = sortedTasks.ToList();
+                        break;
+                    case "Low":
+                            sortedTasks = allTasks.Where(x => x.Priority == "Low" && x.State != "Completed");
+                            vm.TodosList = sortedTasks.ToList();
+                        break;
+                    default:
+                        // code block
+                        break;
+                }
+
+
             }
 
             if (user != null && _dbContext.TaskPriorityDB != null)
@@ -211,12 +223,6 @@ namespace TodoLive.Controllers
 
             return PartialView("_Task", vm);
         }
-
-
-
-
-
-
 
 
     }

@@ -14,17 +14,17 @@
     <div class="userTasksLeftMenu">
         <div class="userTaskLeftMenuContent">
             <ul>
-                <li class="">Active Tasks</li>
+                <li class=""><a class="" asp-area="" asp-controller="Todos" asp-action="Index">Active Tasks</a></li>
                 <li>
                     <span id="menuLeftSubMenu1Btn">Priority <span class="menuLeftSubMenuPriorityArrow"></span></span>
                     <ul class="menuLeftSubMenu1">
-                        <li>Urgent</li>
-                        <li>Important</li>
-                        <li>Medium</li>
-                        <li>Low</li>
+                        <li class="menuLeftShowUrgent">Urgent</li>
+                        <li class="menuLeftShowImportant">Important</li>
+                        <li class="menuLeftShowMedium">Medium</li>
+                        <li class="menuLeftShowLow">Low</li>
                     </ul>
                 </li>
-                <li class="">Overdue</li>
+                <li class="menuLeftShowOverdue">Overdue</li>
                 <li class="menuLeftShowCompleted">Completed</li>
             </ul>
         </div>
@@ -385,12 +385,15 @@
 
             userTasksLeftMenu.addEventListener('click', function (e) {
 
-                if (e.target.matches('.menuLeftShowCompleted')) {
+                if (e.target.matches('.menuLeftShowCompleted, .menuLeftShowLow, .menuLeftShowOverdue, .menuLeftShowUrgent, .menuLeftShowImportant, .menuLeftShowMedium, .menuLeftShowLow')) {
 
-                    $.post('@Url.Action("ShowCompletedTasks", "Todos")', {}, function (data) {
+                    let selectedTasksName = e.target.innerText;
+
+                    $.post('@Url.Action("ShowSelectedTasks", "Todos")', { id : selectedTasksName }, function (data) {
 
                         $('.userTasksCard').html(data)
                     });
+
                 };
 
             });
