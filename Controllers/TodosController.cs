@@ -56,7 +56,6 @@ namespace TodoLive.Controllers
                 vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
             }
 
-            
 
             return View(vm);
         }

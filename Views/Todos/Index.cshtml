@@ -366,7 +366,8 @@
 
 
 
-
+            //ADD UNDERLINE TO A LINK
+            
 
 
 
@@ -381,6 +382,7 @@
                 menuLeftSubMenu1.classList.toggle('showMenuLeftSubMenu1');
             });
 
+            //TASK SORTING - FELT MENU
             const userTasksLeftMenu = document.querySelector('.userTasksLeftMenu');
 
             userTasksLeftMenu.addEventListener('click', function (e) {
@@ -391,7 +393,7 @@
 
                     $.post('@Url.Action("ShowSelectedTasks", "Todos")', { id : selectedTasksName }, function (data) {
 
-                        $('.userTasksCard').html(data)
+                        $('.userTasksCard').html(data);
                     });
 
                 };
