@@ -18,6 +18,7 @@
     --menuLight: #B1B0B1;
     --barelyVisibleLigt: #f5f5f54c;
     --cardBorder: #c7c7c738;
+    --dottedBorder: #cccccc38;
 }
 
 /*RESET BOOTSRAP STYLES*/
@@ -109,11 +110,6 @@ header {
     border: none;
     background: none;
     color: var(--fontLight);
-}
-/* GOOGLE ICONS */
-.material-symbols-outlined {
-    /*font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24*/
-    font-weight: 100;
 }
 
 /*FOOTER*/
@@ -353,12 +349,29 @@ footer h2 {
     border-bottom: solid 1px var(--barelyVisibleLigt);
 }
 
+.customCardContent {
+    border: solid 1px var(--barelyVisibleLigt);
+    width: 97%;
+    margin: auto;
+    margin-bottom: 1rem;
+    min-height: 120px;
+    border-radius: 5px;
+    padding: .5rem;
+    word-wrap: break-word;
+}
+
+.customCardHeader {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-bottom: solid 1px var(--barelyVisibleLigt);
+}
+
 .customCardHeader h5 {
     padding: .7rem;
 }
 
 .customHeaderColorPriority {
-    position: absolute;
     width: 250px;
 }
 
@@ -408,6 +421,12 @@ footer h2 {
     word-wrap: break-word;
 }
 
+/* GOOGLE ICONS */
+/*.material-symbols-outlined {*/
+/*font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24*/
+/*font-weight: 100;
+}*/
+
 .cardFooterButtonsHover:hover {
     font-weight: 900;
     transform: scale(1.1);
@@ -419,6 +438,9 @@ footer h2 {
     background: #666;
     border-radius: 0 0 5px 5px;
     color: var(--fontLight);
+    display: flex;
+    justify-content: space-between;
+    height: 46px;
 }
 
 .cardFooter ul {
@@ -432,13 +454,13 @@ footer h2 {
     padding: .3rem;
     margin: .4rem;
     border-radius: 20px;
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
+    -webkit-user-select: none;
 }
 
 .cardFooterBtns {
     overflow-x: hidden;
+    display: flex;
+    align-items: center;
 }
 
 .cardFooterBtsWithConfirm {
@@ -469,9 +491,138 @@ footer h2 {
     pointer-events: unset;
 }
 
+.cardFooterLeftBtns {
+    display: flex;
+    align-items: center;
+}
+
+.cardFooterLeftBtns li:hover {
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.cardFooterLeftBtns li:hover span {
+    font-weight: 900;
+}
+
+.cardFooterLeftBtns span {
+    font-size: 35px;
+}
+
 /*USER TASKS MENU */
+/*::-webkit-scrollbar the scrollbar.
+::-webkit-scrollbar-button the buttons on the scrollbar (arrows pointing upwards and downwards).
+::-webkit-scrollbar-thumb the draggable scrolling handle.
+::-webkit-scrollbar-track the track (progress bar) of the scrollbar.
+::-webkit-scrollbar-track-piece the track (progress bar) NOT covered by the handle.
+::-webkit-scrollbar-corner the bottom corner of the scrollbar, where both horizontal and vertical scrollbars meet.
+::-webkit-resizer the draggable resizing handle that appears at the bottom corner of some elements.*/
+.taskMenu {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 100vh;
+}
+
+.userTasksMain {
+    overflow-y: auto;
+}
+
+/* width */
+.userTasksMain::-webkit-scrollbar {
+    width: 20px;
+}
+
+/* Track */
+.userTasksMain::-webkit-scrollbar-track {
+    display: none;
+}
+
+/* Handle */
+.userTasksMain::-webkit-scrollbar-thumb {
+    background: #2e2e2e;
+    border-radius: 15px;
+}
+
+.userTaskLeftMenuContent li {
+    list-style: none;
+    margin: .5rem;
+    cursor: pointer;
+}
+
+.userTaskLeftMenuContent a {
+    text-decoration: none;
+}
+
+.userTasksContent {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.userTasksLeftMenu {
+    border-right: 1px dashed var(--dottedBorder);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 .addTodoBtn {
+    margin-top: 100px;
+    margin-bottom: 2rem;
+    width: 150px;
+    height: 40px;
+    background-color: var(--greenLight);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menuLeftShowPriority {
+    position: relative;
+}
+
+.priorityBtnsBox {
+    display: flex;
+    opacity: 0;
+    pointer-events: none;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    border-radius: 5px;
+    background-color: var(--menuDark);
+    border: 1px dashed var(--dottedBorder);
+    width: 180px;
+    top: -35px;
+    transition: all ease-in-out .2s;
+    cursor: default;
+}
+
+.priorityBtnsBoxShow {
+    opacity: 1;
+    pointer-events: unset;
+    transform: translate(-42px);
+}
+
+.priorityBtnsBox span {
+    margin: .2rem;
+}
+
+.priorityBtnsBox span:hover {
+    cursor: pointer;
+}
+
+.priorityColseBtnBox {
+    position: relative;
+}
+
+.priorityColseBtn {
+    position: absolute;
+    right: -88px;
+}
+
+/*.addTodoBtn {
     position: fixed;
     left: 2rem;
     bottom: 2rem;
@@ -507,7 +658,7 @@ footer h2 {
 
 .userTasksLeftMenu {
     min-width: 300px;
-    border-right: 1px dashed #cccccc38;
+    border-right: 1px dashed var(--dottedBorder);
 }
 
 .userTasksLeftMenu ul {
@@ -519,15 +670,13 @@ footer h2 {
     transition: .1s ease-in-out;
     cursor: pointer;
     list-style: none;
-}
-
+}*/
 /*.userTasksLeftMenu li:first-child a  {
     text-decoration: dashed;
     text-decoration-line: underline;
     text-decoration-thickness: 3px;
 }*/
-
-.userTasksLeftMenu li:hover {
+/*.userTasksLeftMenu li:hover {
     transform: translateX(5px);
 }
 
@@ -545,8 +694,15 @@ footer h2 {
     min-height: 100vh;
 }
 
-@media screen and (max-width: 1055px){
-
+.userTaskLeftAiContent {
+    width: 90%;
+    margin: auto;
+    height: 40vh;
+    margin-top: 200px;
+    border-radius: 5px;
+    border: 1px dashed var(--dottedBorder);
+}*/
+@media screen and (max-width: 1055px) {
     header {
         width: 250px;
         transform: translate(-100%);

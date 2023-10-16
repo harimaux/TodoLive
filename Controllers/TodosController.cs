@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using OpenAI_API.Completions;
+using OpenAI_API;
 using System.Globalization;
 using System.Linq.Expressions;
 using System.Security.Claims;
@@ -18,13 +20,15 @@ namespace TodoLive.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IConfiguration _config;
 
-        public TodosController(ILogger<TodosController> logger, ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public TodosController(ILogger<TodosController> logger, ApplicationDbContext dbContext, UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration config)
         {
             _logger = logger;
             _dbContext = dbContext;
             _userManager = userManager;
             _signInManager = signInManager;
+            _config = config;
         }
 
 
@@ -34,26 +38,27 @@ namespace TodoLive.Controllers
         }
 
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // Get logged user details
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             var vm = new MainVM();
 
             if (user != null && _dbContext.TodosDB != null)
             {
-                var allUserTasks = _dbContext.TodosDB
+                var allUserTasks = await _dbContext.TodosDB
                     .Where(x => x.OwnerId == userId && x.State != "Completed")
                     .OrderByDescending(x => x.DateRequested)
-                    .ToList();
+                    .ToListAsync();
+
                 vm.TodosList = allUserTasks;
             }
 
             if(user != null && _dbContext.TaskPriorityDB != null)
             {
-                vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
+                vm.TaskPriorityList = await _dbContext.TaskPriorityDB.ToListAsync();
             }
 
 
@@ -76,7 +81,7 @@ namespace TodoLive.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             var vm = new MainVM();
 
@@ -97,7 +102,7 @@ namespace TodoLive.Controllers
 
             if (user != null && _dbContext.TaskPriorityDB != null)
             {
-                vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
+                vm.TaskPriorityList = await _dbContext.TaskPriorityDB.ToListAsync();
             }
 
             vm.TodosList?.Add(newTask);
@@ -111,21 +116,26 @@ namespace TodoLive.Controllers
         public async Task<IActionResult> DeleteTask(string cardId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             int convertedId = Int32.Parse(cardId);
 
             if (_dbContext.TodosDB != null)
             {
-                var task = await _dbContext.TodosDB.FindAsync(convertedId);
+                var task = await _dbContext.TodosDB
+                    .Where(x => x.OwnerId == userId && x.Id == convertedId)
+                    .FirstOrDefaultAsync();
 
-                if (task == null)
+                if (task != null)
+                {
+                    _dbContext.TodosDB.Remove(task);
+                    await _dbContext.SaveChangesAsync();
+
+                }
+                else
                 {
                     return Content("Error - no task to delete.");
                 }
-
-                _dbContext.TodosDB.Remove(task);
-                await _dbContext.SaveChangesAsync();
 
             }
 
@@ -139,7 +149,7 @@ namespace TodoLive.Controllers
         public async Task<IActionResult> MarkTaskAsComplete(string cardId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = _dbContext.Users.FirstOrDefault(u => u.Id == userId);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             int convertedId = Int32.Parse(cardId);
 
@@ -217,11 +227,55 @@ namespace TodoLive.Controllers
 
             if (user != null && _dbContext.TaskPriorityDB != null)
             {
-                vm.TaskPriorityList = _dbContext.TaskPriorityDB.ToList();
+                vm.TaskPriorityList = await _dbContext.TaskPriorityDB.ToListAsync();
             }
 
             return PartialView("_Task", vm);
         }
+
+
+
+
+        [HttpPost]
+        public IActionResult GPTsolveTask(string id, string value)
+        {
+            var jsonApiStore = _config["AppSettings:ApiKey"];
+            string APIkey = string.Empty;
+
+            if (jsonApiStore != null)
+            {
+                APIkey = jsonApiStore;
+            }
+
+            return Ok();
+
+            //string answer = string.Empty;
+            //var openai = new OpenAIAPI(APIkey);
+            //CompletionRequest completion = new CompletionRequest();
+            //completion.Prompt = value;
+            ////completion.Model = OpenAI_API.Models.Model.DavinciText;
+            //completion.Model = OpenAI_API.Models.Model.AdaText;
+            //completion.MaxTokens = 100;
+            //var result = openai.Completions.CreateCompletionsAsync(completion);
+
+            //if (result != null)
+            //{
+            //    foreach (var item in result.Result.Completions)
+            //    {
+            //        answer = item.Text;
+            //    }
+            //    return Ok(answer);
+            //}
+            //else
+            //{
+            //    return BadRequest("Not Found");
+            //}
+
+        }
+
+
+
+
 
 
     }

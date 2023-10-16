@@ -1,33 +1,50 @@
 ﻿@model TodoLive.Models.MainVM
 
-<div class="addTodoBtn">
-    <span class="material-symbols-outlined">
-        note_add
-    </span>
-    <div>
-        Add Task
-    </div>
-</div>
+
 
 <div class="taskMenu">
 
     <div class="userTasksLeftMenu">
+
+        <div class="addTodoBtn">
+            <span class="material-symbols-outlined">
+                note_add
+            </span>
+            <div>
+                Add Task
+            </div>
+        </div>
+
         <div class="userTaskLeftMenuContent">
+
             <ul>
-                <li class=""><a class="" asp-area="" asp-controller="Todos" asp-action="Index">Active Tasks</a></li>
-                <li>
-                    <span id="menuLeftSubMenu1Btn">Priority <span class="menuLeftSubMenuPriorityArrow"></span></span>
-                    <ul class="menuLeftSubMenu1">
-                        <li class="menuLeftShowUrgent">Urgent</li>
-                        <li class="menuLeftShowImportant">Important</li>
-                        <li class="menuLeftShowMedium">Medium</li>
-                        <li class="menuLeftShowLow">Low</li>
-                    </ul>
+                <li><a asp-area="" asp-controller="Todos" asp-action="Index">Active Tasks</a></li>
+                <li class="menuLeftShowPriority">Priority
+
+                    <span class="priorityBtnsBox">
+                        <span class="priorityColseBtnBox">
+                            <span class="material-symbols-outlined priorityColseBtn">
+                                close
+                            </span>
+                        </span>
+                        <span class="menuLeftShowUrgent">Urgent</span>
+                        <span class="menuLeftShowImportant">Important</span>
+                        <span class="menuLeftShowMedium">Medium</span>
+                        <span class="menuLeftShowLow">Low</span>
+                    </span>
                 </li>
                 <li class="menuLeftShowOverdue">Overdue</li>
                 <li class="menuLeftShowCompleted">Completed</li>
             </ul>
+
         </div>
+
+        <div class="userTaskLeftAiContent">
+            <div class="userTaskLeftChatBox">
+
+            </div>
+        </div>
+
     </div>
 
 
@@ -38,11 +55,16 @@
 
         <div class="userTasksContent">
 
-            <div class="userTasksCard">
+@*             <div class="userTasksCard">
 
                 <partial name="_Task" />
 
+            </div> *@
+
+            <div class="userTasksCard">
+                @await Html.PartialAsync("_Task")
             </div>
+
 
         </div>
 
@@ -263,6 +285,8 @@
                         let addedCard = document.querySelector('.userTasksCard').firstElementChild;
                         $(addedCard).effect("shake");
 
+                        getAiHelp();
+
                     },
                     error: function (xhr, status, error) {
                         var errorMessage = xhr.responseText || 'An error occurred.';
@@ -367,26 +391,17 @@
 
 
             //ADD UNDERLINE TO A LINK
-            
 
 
 
 
 
-            //USER TASKS - LEFT MENU
-            const menuLeftSubMenu1Btn = document.querySelector('#menuLeftSubMenu1Btn');
-            const menuLeftSubMenu1 = document.querySelector('.menuLeftSubMenu1');
 
-            menuLeftSubMenu1Btn.addEventListener('click', () => {
 
-                menuLeftSubMenu1.classList.toggle('showMenuLeftSubMenu1');
-            });
-
-            //TASK SORTING - FELT MENU
             const userTasksLeftMenu = document.querySelector('.userTasksLeftMenu');
-
             userTasksLeftMenu.addEventListener('click', function (e) {
 
+                //TASK SORTING - LEFT MENU
                 if (e.target.matches('.menuLeftShowCompleted, .menuLeftShowLow, .menuLeftShowOverdue, .menuLeftShowUrgent, .menuLeftShowImportant, .menuLeftShowMedium, .menuLeftShowLow')) {
 
                     let selectedTasksName = e.target.innerText;
@@ -394,11 +409,58 @@
                     $.post('@Url.Action("ShowSelectedTasks", "Todos")', { id : selectedTasksName }, function (data) {
 
                         $('.userTasksCard').html(data);
+
+                        getAiHelp();
                     });
 
                 };
 
+
+                //USER TASKS - LEFT MENU
+                if (e.target.matches('.menuLeftShowPriority, .priorityColseBtn')) {
+
+                    const priorityBtnsBox = document.querySelector('.priorityBtnsBox');
+                    priorityBtnsBox.classList.toggle('priorityBtnsBoxShow');
+
+                }
+
             });
+
+
+
+
+            //AI TASK SUPPORT
+
+            let getAiHelp = () => {
+
+                let allAiHelpBtns = document.querySelectorAll('.cardFooterLeftBtnsAiHelp');
+                allAiHelpBtns.forEach(btn => {
+
+                    btn.addEventListener('click', (e) => {
+
+                        //console.log(e.target.closest('div > .customCardContent'));
+                        //console.log($(e.target).parents()[3]);
+
+                        let cardParent = $(e.target).parents()[3];
+                        let cardContent = $(cardParent).find('.customCardContent > p')[0];
+
+                        let cardContentValue = cardContent.innerHTML;
+                        let cardId = e.target.parentElement.getAttribute('cardId');
+
+                        $.post('@Url.Action("GPTsolveTask", "Todos")', { id: cardId, value: cardContentValue }, function (data) {
+
+                        });
+
+                    });
+                });
+
+            };
+
+            getAiHelp();
+
+
+
+
 
 
 
