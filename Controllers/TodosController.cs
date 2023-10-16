@@ -249,6 +249,8 @@ namespace TodoLive.Controllers
 
             return Ok();
 
+            //test
+
             //string answer = string.Empty;
             //var openai = new OpenAIAPI(APIkey);
             //CompletionRequest completion = new CompletionRequest();
